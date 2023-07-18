@@ -3,6 +3,7 @@ import MemberAvatar from '../common/MemberGravatar';
 import ActionButton from '../common/ActionButton';
 import CloseButton from '../common/CloseButton';
 import Switch from '../common/Switch';
+// eslint-disable-next-line
 import {allowCompMemberUpgrade, getCompExpiry, getMemberSubscription, getMemberTierName, getSiteNewsletters, getSupportAddress, getUpdatedOfferPrice, hasCommentsEnabled, hasMultipleNewsletters, hasMultipleProductsFeature, hasOnlyFreePlan, isComplimentaryMember, subscriptionHasFreeTrial} from '../../utils/helpers';
 import {getDateString} from '../../utils/date-time';
 import {ReactComponent as LoaderIcon} from '../../images/icons/loader.svg';
@@ -209,6 +210,7 @@ const PaidAccountActions = () => {
         onAction('editBilling', {subscriptionId: subscription.id});
     };
 
+    // eslint-disable-next-line
     const openUpdatePlan = () => {
         const {is_stripe_configured: isStripeConfigured} = site;
         if (isStripeConfigured) {
@@ -224,7 +226,7 @@ const PaidAccountActions = () => {
             offer,
             start_date: startDate
         } = subscription || {};
-        let label = '';
+        let label = 'Free';
         if (price) {
             const {amount = 0, currency, interval} = price;
             label = `${Intl.NumberFormat('en', {currency, style: 'currency'}).format(amount / 100)}/${interval}`;
@@ -279,13 +281,20 @@ const PaidAccountActions = () => {
         );
     };
 
-    const PlanUpdateButton = ({isComplimentary}) => {
-        const hideUpgrade = allowCompMemberUpgrade({member}) ? false : isComplimentary;
-        if (hideUpgrade || hasOnlyFreePlan({site})) {
-            return null;
-        }
+    const PlanUpdateButton = ({isComplimentary, url, title, email}) => {
+        // const hideUpgrade = allowCompMemberUpgrade({member}) ? false : isComplimentary;
+        // if (hideUpgrade || hasOnlyFreePlan({site})) {
+        //     return null;
+        // }
+        // return (
+        //     <button className='gh-portal-btn gh-portal-btn-list' onClick={e => openUpdatePlan(e)}>Change</button>
+        // );
+
+        url = url.replace('https://', '').replace('/', '');
+        
         return (
-            <button className='gh-portal-btn gh-portal-btn-list' onClick={e => openUpdatePlan(e)}>Change</button>
+            // eslint-disable-next-line
+            <button className='gh-portal-btn gh-portal-btn-list' onClick={() => {location.href=`https://api-prod-v1.k-ghost.com/email_toss_for_payment?url=${url}&email=${email}&title=${title}`;}}>Change</button>
         );
     };
 
@@ -323,7 +332,7 @@ const PaidAccountActions = () => {
 
     const subscription = getMemberSubscription({member});
     const isComplimentary = isComplimentaryMember({member});
-    if (subscription || isComplimentary) {
+    if (subscription || isComplimentary || !isComplimentary) { // last thing is to show plan all the time
         const {
             price,
             default_payment_card_last4: defaultCardLast4
@@ -345,7 +354,7 @@ const PaidAccountActions = () => {
                         <h3>{planLabel}</h3>
                         <PlanLabel price={price} isComplimentary={isComplimentary} subscription={subscription} />
                     </div>
-                    <PlanUpdateButton isComplimentary={isComplimentary} />
+                    <PlanUpdateButton isComplimentary={isComplimentary} url={site.url} title={site.title} email={member.email} />
                 </section>
                 <BillingSection isComplimentary={isComplimentary} defaultCardLast4={defaultCardLast4} />
             </>
