@@ -237,7 +237,7 @@ const PaidAccountActions = () => {
             if (compExpiry) {
                 label = `Complimentary - Expires ${compExpiry}`;
             } else {
-                label = label ? `Complimentary (${label})` : `Complimentary`;
+                label = label ? `K-Ghost 구독` : `Complimentary`;
             }
         }
         let oldPriceClassName = '';
