@@ -338,6 +338,7 @@ const PaidAccountActions = () => {
             default_payment_card_last4: defaultCardLast4
         } = subscription || {};
         let planLabel = 'Plan';
+        const kGhost = true;
 
         // Show name of tiers if there are multiple tiers
         if (hasMultipleProductsFeature({site}) && getMemberTierName({member})) {
@@ -356,7 +357,7 @@ const PaidAccountActions = () => {
                     </div>
                     <PlanUpdateButton isComplimentary={isComplimentary} url={site.url} title={site.title} email={member.email} />
                 </section>
-                <BillingSection isComplimentary={isComplimentary} defaultCardLast4={defaultCardLast4} />
+                {kGhost ? null : <BillingSection isComplimentary={isComplimentary} defaultCardLast4={defaultCardLast4} />}
             </>
         );
     }
